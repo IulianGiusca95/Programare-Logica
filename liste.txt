@@ -1,0 +1,83 @@
+fmod LISTE-OK is
+
+protecting NAT .
+
+sort Lista .
+subsort Nat < Lista .
+
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+op lungime : Lista -> Nat .
+
+var X : Nat .
+var L : Lista .
+
+eq lungime(nil) = 0 .
+eq lungime(X L) = s lungime(L) .
+
+endfm 
+
+
+fmod LISTE-OP is
+protecting NAT .
+sorts Lista Infinit.
+subsort Nat < Lista .
+subsort Infinit < Nat .
+
+op infinit : -> Infinit .
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+op lungime : Lista -> Nat .
+op suma : Lista -> Nat .
+op indicipari : Lista -> Lista .
+op indiciimpari : Lista -> Lista .
+op elempare : Lista -> Lista .
+op maxim : Nat Nat -> Nat .
+op maxlista : Lista -> Nat .
+op minim : Nat Nat -> Nat .
+op minlista : Lista -> Nat .
+op nucifre : Lista -> Lista .
+op eordcresc : Lista -> Bool .
+op lm3 : Nat -> Lista .
+
+vars X Y : Nat .
+var L : Lista .
+
+eq lungime(nil) = 0 .
+eq lungime(X L) = s lungime(L) .
+
+eq suma(nil) = 0 .
+eq suma(X L) = X + suma(L) .
+
+eq indicipari(nil) = nil .
+eq indicipari(X) = nil .
+eq indicipari(X Y L) = Y indicipari(L) .
+
+eq indiciimpari(nil) = nil .
+eq indiciimpari(X) = X .
+eq indiciimpari(X Y L) = X indiciimpari(L) .
+
+eq elempare(nil) = nil .
+ceq elempare(X L) = X elempare(L) if 2 divides X .
+eq elempare(X L) = elempare(L) [owise] .
+
+eq maxim (X,Y) = if X <= Y then Y else X fi .
+eq maxlista(nil) = 0 .
+eq maxlista(X L) = maxim(X, maxlista(L)) .
+
+eq minim(X,Y) = if X <= Y then X else Y fi .
+eq minlista(nil) = infinit .
+eq minlista(X) = X .
+eq minlista(X Y L) = minim(X, minlista(Y L)) .
+
+eq nucifre(nil) = nil .
+eq nucifre(X L) = if X >= 10 then X nucifre(L) else nucifre(L) fi . 
+
+eq eordcresc(nil) = true .
+eq eordcresc(X) = true .
+eq eordcresc(X Y L) = X <= Y and eordcresc(Y L) .
+
+eq lm3(0) = nil .
+eq lm3(s X) = lm3(X) (3 * (s X)) .
+
+endfm

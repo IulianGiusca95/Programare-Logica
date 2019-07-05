@@ -1,0 +1,33 @@
+
+fmod COMPLEX is 
+protecting FLOAT .
+sort Complex .
+
+op _+_i : Float Float -> Complex .
+op _+_ : Complex Complex -> Complex .
+op _-_ : Complex Complex -> Complex .
+op _*_ : Complex Complex -> Complex .
+op _/_ : Complex Complex -> Complex .
+op abs : Complex -> Complex .
+ops real1 imag1 real2 imag2 real3 imag3 real4 imag4 : Complex Complex -> Float .
+op modul : Complex -> Float .
+
+vars A B : Complex .
+vars M N O P : Float .
+
+eq A + B = real1(A,B) + imag1(A,B) i .
+eq A * B = real2(A,B) + imag2(A,B) i .
+eq A - B = real3(A,B) + imag3(A,B) i .
+eq A / B = real4(A,B) + imag4(A,B) i .
+eq modul(M + N i) = sqrt(M * M + N * N) .
+eq real1(M + N i , O + P i) = M + O .
+eq imag1(M + N i , O + P i) = N + P .
+eq real2(M + N i , O + P i) = M * O - N * P .
+eq imag2(M + N i , O + P i) = M * P + O * N .
+eq real3(M + N i , O + P i) = M - O .
+eq imag3(M + N i , O + P i) = N - P .
+eq real4(M + N i , O + P i) = M / O - N / P .
+eq imag4(M + N i , O + P i) = M / P + N / O .
+
+
+endfm

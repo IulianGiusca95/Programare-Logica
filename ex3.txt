@@ -1,0 +1,901 @@
+fmod FIB is
+protecting NAT . 
+
+sort Lista .
+subsort Nat < Lista .
+
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+
+op adauga : Lista -> Lista .
+op sirfib : Nat -> Lista .
+op ult : Lista -> Nat .
+op fib : Nat -> Nat .
+
+vars M N : Nat .
+var L : Lista .
+
+eq adauga(nil) = nil .
+eq adauga(N) = N .
+eq adauga(L M N) = L M N (M + N) .
+
+eq sirfib(0) = 0 .
+eq sirfib(1) = 0 1 .
+eq sirfib(s s N) = adauga(sirfib(s N)) .
+
+eq ult(nil) = 0 .
+eq ult(L M) = M .
+
+eq fib(N) = ult(sirfib(N)) .
+
+endfm
+
+**************
+
+fmod LISTE2 is
+protecting NAT .
+sort Lista .
+subsort Nat < Lista .
+
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+op sumaprec : Lista -> Lista .
+op sumaelem : Lista -> Nat .
+op _apartine_ : Nat Lista -> Bool .
+op nraparitii : Nat Lista -> Nat .
+op nth : NzNat Lista -> Nat .
+op inversa : Lista -> Lista .
+op sterge : Nat Lista -> Lista .
+op stergetot : Nat Lista -> Lista .
+ops elimdup elimdup2 : Lista -> Lista .
+op _lex_ : Lista Lista -> Bool .
+op listm7 : Nat -> Lista .
+
+var X Y : Nat .
+var L M N : Lista .
+
+eq sumaprec(nil) = nil .
+ceq sumaprec(L X) = X sumaprec(L) if X == sumaelem(L) .
+eq sumaprec(L X) = sumaprec(L) [owise] .
+
+eq sumaelem(nil) = 0 .
+eq sumaelem(X L) = X + sumaelem(L) .
+
+eq X apartine nil = false .
+eq X apartine Y L = X apartine L or X == Y .
+
+eq nraparitii(X, nil) = 0 .
+ceq nraparitii(X, Y L) = s nraparitii(X, L) if X == Y .
+eq nraparitii(X, Y L) = nraparitii(X, L) [owise] .
+
+eq nth(X, nil) = 0 .
+eq nth(1, Y L) = Y .
+eq nth(s X, Y L) = nth(X, L) . 
+
+eq inversa(nil) = nil .
+eq inversa(X L) = inversa(L) X .
+
+eq sterge(X, X L) = L .
+ceq sterge(X, Y L) = Y sterge(X, L) if Y =/= X .
+
+eq stergetot(X, nil) = nil .
+eq stergetot(X, X L) = stergetot(X, L) .
+ceq stergetot(X, Y L) = Y stergetot(X, L) if Y =/= X .
+
+eq elimdup(nil) = nil .
+eq elimdup(X) = X .
+ceq elimdup(X L) = elimdup(L) if X apartine L .
+eq elimdup(X L) = X elimdup(L) [owise] .
+
+eq elimdup2(nil)= nil .
+eq elimdup2(X) = X .
+ceq elimdup2(L X) = elimdup2(L) if X apartine L .
+eq elimdup2(L X) = elimdup2(L) X [owise] .
+
+eq nil lex L = true .
+eq L lex nil = false .
+eq X M lex X N = M lex N .
+ceq X M lex Y N = true if X <= Y .
+ceq X M lex Y N = false if X > Y .
+
+eq listm7(0) = nil .
+ceq listm7(s X) = X listm7(X) if 7 divides X .
+eq listm7(s X) = listm7(X) [owise] .
+
+endfm 
+
+*******
+
+fmod LISTE3 is
+
+protecting LISTE2 .
+
+ops lungpara lungimpara : Lista -> Bool .
+ops sim1 sim2 : Lista -> Bool .
+op listacifre : Nat -> Lista .
+ops pal1 pal2 : Nat -> Bool .
+op _sublista_ : Lista Lista -> Bool .
+ops multime multime2 : Lista -> Bool .
+
+vars L M N : Lista .
+vars X Y : Nat .
+
+eq lungpara(nil) = true .
+eq lungpara(X) = false .
+eq lungpara(X Y L) = lungpara(L) .
+
+eq lungimpara(nil) = false .
+eq lungimpara(X) = true .
+eq lungimpara(X Y L) = lungimpara(L) .
+
+eq sim1(nil) = true .
+eq sim1(X) = true .
+eq sim1(X L X) = sim1(L) .
+ceq sim1(X L Y) = false if X =/= Y .
+eq sim2(L) = L == inversa(L) .
+
+ceq listacifre(X) = X if X < 10 .
+eq listacifre(X) = listacifre(X quo 10) X rem 10 [owise] .
+
+eq pal1(X) = sim1(listacifre(X)) .
+eq pal2(X) = sim2(listacifre(X)) .
+
+eq nil sublista nil = true .
+eq nil sublista L = true .
+eq L sublista nil = false .
+eq X M sublista X N = M sublista N .
+ceq X M sublista Y N = X M sublista N if X =/= Y .
+
+eq multime(L) = L == elimdup(L) .
+eq multime2(L) = L == elimdup2(L) .
+
+ 
+
+endfm
+
+******************************
+
+fmod RELBIN1 is
+protecting NAT . 
+sorts Element Relatie .
+subsort Element < Relatie .
+
+op (_,_) : Nat Nat -> Element .
+op vida : -> Relatie .
+op __ : Relatie Relatie -> Relatie [assoc comm id: vida] .
+
+op _apartine_ : Element Relatie -> Bool .
+op elimdup : Relatie -> Relatie .
+op _U_ : Relatie Relatie -> Relatie .
+op _o_ : Relatie Relatie -> Relatie .
+op _la_ : Relatie NzNat -> Relatie .
+op inversa : Relatie -> Relatie .
+
+vars X Y Z T : Nat .
+var N : NzNat .
+vars E F : Element .
+vars R S : Relatie .
+
+eq E apartine vida = false .
+eq E apartine (E R) = true .
+ceq E apartine (F R) = false if E =/= F .
+
+eq elimdup(vida) = vida .
+eq elimdup(E R) = if E apartine R then elimdup(R) else E elimdup(R) fi .
+
+eq R U S = elimdup(R S) .  
+
+eq vida o R = vida .
+eq R o vida = vida .
+eq ((X,Y) R) o ((Y,T) S) = elimdup((X,T) ((X,Y) o S) (R o (Y,T)) (R o S)) .
+ceq ((X,Y) R) o ((Z,T) S) = elimdup(((X,Y) o S) (R o (Z,T)) (R o S)) if Y =/= Z .
+
+eq R la 1 =  R .
+eq R la s N = (R la N) o R .
+
+eq inversa(vida) = vida .
+eq inversa((X,Y) R) = (Y,X) inversa(R) .
+
+               
+endfm
+
+
+
+**********************
+
+fmod CIUR is ***> ciurul lui Eratostene
+
+   protecting NAT .
+
+   sort Lista .
+   subsort Nat < Lista .
+
+   op nil : -> Lista .
+   op __ : Lista Lista -> Lista [assoc id: nil] .
+
+   op filtreaza_cu_ : Lista Nat -> Lista .
+   op mai-mici-decat_ : Nat -> Lista .
+   op ciuruire_ : Lista -> Lista .
+   op primele-pana-la_ : Nat -> Lista .
+
+   var X : Nat .
+   vars P N : NzNat .
+   var L : Lista .
+
+   eq filtreaza nil cu P = nil .
+   eq filtreaza (N L) cu P = if P divides N then filtreaza L cu P else N filtreaza L cu P fi .
+
+   eq mai-mici-decat 0 = nil .
+   eq mai-mici-decat 1 = nil .
+   eq mai-mici-decat 2 = 2 .
+   eq mai-mici-decat s s N = mai-mici-decat s N s s N .
+
+   eq ciuruire nil = nil .
+   eq ciuruire (N L) = N (ciuruire (filtreaza L cu N)) .
+
+   eq primele-pana-la X = ciuruire (mai-mici-decat X) .
+
+endfm
+
+*****************************
+
+fmod PERECHI-LISTE is
+protecting NAT .
+sorts Lista PerNat PerLista .
+subsort Nat < Lista .
+
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil prec 20] .
+op (_,_) : Nat Nat -> PerNat .
+op {_;_} : Lista Lista -> PerLista .
+op concat : PerLista PerLista -> PerLista .
+op perip : Lista - PerLista .
+op eroare : -> PerNat .
+
+
+vars L1 L2 L3 L4 : Lista .
+
+eq concat({L1;L2},{L3;L4}) = {L1 L3; L2 L4} .
+
+eq perip(nil) = {nil; nil} .
+eq perip(X) = {X; nil} .
+eq perip(X Y L) = concat({X;Y}, perip(L)) .
+
+
+endfm
+
+
+************************************
+
+fth RING is 
+sort Ring .
+
+op z e : -> Ring .
+op _+_ : Ring Ring -> Ring [assoc comm id: z] .
+op _*_ : Ring Ring -> Ring [assoc comm id: e] .
+op -_ : Ring -> Ring .
+vars A B C : Ring .
+
+eq A + (- A) = z [nonexec] . 
+eq A * (B + C ) = (A * B) + (A * C) [nonexec] .
+
+endfth
+
+view RingToRat from RING to RAT is
+sort Ring to Rat .
+op e to term 1 .
+op z to 0 .
+endv
+
+------------------------------------------------
+
+fmod LIST{X :: TRIV} is
+sort List{X} .
+subsort X$Elt < List{X} .
+op nil : -> List{X} .
+op __ : List{X} List{X} -> List{X} [assoc id: nil] .
+op concat : List{X} List{X} -> List{X} .
+
+vars X Y : List{X} .
+
+eq concat(X,Y) = X Y .
+
+endfm
+
+view Int from TRIV to INT is
+sort Elt to Int .
+endv
+
+fmod LIST-INT is 
+protecting LIST{Int} .
+endfm 
+
+---------------------------------------------------
+
+fth TRIV# is
+including TRIV .
+op #_ : Elt -> Elt .
+endfth 
+
+
+fmod LIST#{X :: TRIV#} is
+sort List{X} .
+subsort X$Elt < List{X} .
+op nil : -> List{X} .
+op __ : List{X} List{X} -> List{X} [assoc id: nil] .
+op apply# : List{X} -> List{X} .
+
+var I : X$Elt .
+var L : List{X} .
+
+eq apply#(I L) = # I apply#(L) .
+
+endfm
+
+
+view MyInt1 from TRIV# to INT is
+sort Elt to Int .
+op #_ to -_ .
+endv 
+
+view MyInt2 from TRIV# to INT is 
+sort Elt to Int .
+op # X:Elt to term (X:Int + 2) .
+endv
+
+fmod LIST-NOUA is
+protecting LIST#{MyInt1} .
+endfm 
+
+
+------------------------------------------------
+----Ex 1 Lab 5 ---------------------------------
+
+fmod PAIR{X :: TRIV, Y :: TRIV} is
+sort Pair{X,Y} .
+op _;_ : X$Elt Y$Elt -> Pair{X,Y} .
+op first : Pair{X,Y} -> X$Elt .
+op second : Pair{X,Y} -> Y$Elt .
+var A : X$Elt .
+var B : Y$Elt .
+eq first(A ; B) = A .
+eq second(A ; B) = B .
+endfm
+
+
+fmod PAIR-INT is
+protecting PAIR{Int,Int} .
+endfm 
+
+
+
+fmod LIST{X :: TRIV} is
+sort List{X} .
+subsort X$Elt < List{X} .
+op nil : -> List{X} .
+op __ : List{X} List{X} -> List{X} [assoc id: nil].
+endfm
+
+view PairInt from TRIV to PAIR-INT is
+sort Elt to Pair{Int,Int} .
+endv
+
+
+fmod LIST-PAIR-INT is 
+protecting LIST{PairInt} .
+protecting LIST{Int} .
+ops @first @second : List{PairInt} -> List{Int} .
+
+var A : Pair{Int,Int} .
+var L : List{PairInt} .
+eq @first(nil) = nil .
+eq @first(A L) = first(A) @first(L) .
+eq @second(nil) = nil .
+eq @second(A L) = second(A) @second(L) .
+endfm 
+
+
+fmod PAIR-INT-STRING is 
+protecting PAIR{Int,String} .
+endfm 
+
+view PairIntString from TRIV to PAIR-INT-STRING is
+sort Elt to Pair{Int,String} .
+endv
+
+fmod LIST-INT-STRING is
+protecting LIST{PairIntString} .
+endfm
+
+--------------------------------------------------------
+------------ex2 lab 5-----------------------------------
+
+fth TOSET is
+including TRIV .
+protecting BOOL .
+op _<=_ : Elt Elt -> Bool .
+vars X Y Z : Elt .
+eq X <= X = true [nonexec] .
+ceq X <= Z = true if X <= Y and Y <= Z [nonexec] .
+ceq X == Y = true if X <= Y and Y <= X [nonexec] .
+ceq X <= Y = true if not (Y <= X) [nonexec] .
+endfth
+
+fmod PAIR{X :: TOSET,Y :: TOSET} is
+sort Pair{X,Y} .
+op _;_ : X$Elt Y$Elt -> Pair{X,Y} .
+op _lex_ : Pair{X,Y} Pair{X,Y} -> Bool .
+op first : Pair{X,Y} -> X$Elt .
+op second : Pair{X,Y} -> Y$Elt .
+var A : X$Elt .
+var B : Y$Elt .
+vars P1 P2 : Pair{X,Y} .
+eq first(A ; B) = A .
+eq second(A ; B) = B .
+eq P1 lex P2 = (first(P1) <= first(P2) and first(P1) =/= first(P2)) or (first(P1) == first(P2) and second(P1) <= second(P2)) .
+endfm
+
+view EltToInt from TOSET to INT is
+sort Elt to Int .
+endv
+
+fmod PAIR-INT is
+protecting PAIR{EltToInt,EltToInt} .
+endfm 
+
+------------------------------------------------------
+--------------ex3 lab 5-------------------------------
+
+fmod SET{X :: TRIV} is 
+sort Set{X} .
+subsort X$Elt < Set{X} .
+op nil : -> Set{X} .
+op __ : Set{X} Set{X} -> Set{X} [assoc comm id: nil] .
+endfm 
+
+view Toset from TRIV to TOSET is
+endv
+
+view IntAsToset from TOSET to INT is
+sort Elt to Int .
+endv
+
+fmod SET-INT is
+protecting SET{Toset}{IntAsToset} .
+endfm
+
+
+fmod SET-MAX{T :: TOSET} is 
+protecting SET{Toset}{T} .
+op maxim : Set{Toset}{T} -> T$Elt .
+op maxim-elem : T$Elt T$Elt -> T$Elt .
+vars X Y : T$Elt .
+var S : Set{Toset}{T} .
+eq maxim(nil) = nil .
+eq maxim(X) = X .
+eq maxim(X Y S) = if X <= Y then maxim-elem(Y,maxim(S)) else maxim-elem(X,maxim(S)) fi .
+eq maxim-elem(X,Y) = if X <= Y then Y else X fi .
+endfm 
+
+fmod SET-MAX-INT is 
+protecting SET-MAX{IntAsToset} .
+endfm
+
+view StringAsToset from TOSET to STRING is
+sort Elt to String .
+endv
+
+fmod SET-MAX-STRING is
+protecting SET-MAX{StringAsToset} .
+endfm
+
+
+
+
+
+-----------------------------------------------------------
+-----------------Lab6 ex1----------------------------------
+
+fth TOSET is 
+including TRIV .
+protecting BOOL .
+op _<=_ : Elt Elt -> Bool .
+vars X Y : Elt .
+endfth
+
+
+fmod LIST{T :: TOSET} is
+sort List{T} .
+subsort T$Elt < List{T} .
+protecting NAT .
+
+op nil : -> List{T} .
+op __ : T$Elt List{T} -> List{T} [id: nil] .
+op length : List{T} -> Nat .
+op _<<<_ : List{T} List{T} -> Bool .
+op compar : List{T} List{T} -> Bool .
+op sort : List{T} -> List{T} .
+op insert : T$Elt List{T} -> List{T}
+vars X Y : T$Elt .
+vars M N : List{T} .
+eq length(nil) = 0 .
+eq length(X M) = 1 + length(M) .
+ceq M <<< N = true if length(M) < length(N) or (length(M) == length(N) and compar(M,N)) .
+ceq M <<< N = false if length(M) > length(N) or (length(M) == length(N) and not(compar(M,N))) .
+eq compar(nil, nil) = true .
+eq compar(X M, Y N) = X <= Y and compar(M,N) .
+eq insert(X, nil) = X .
+eq insert(X, Y M) = if X <= Y then X Y M else Y insert(X, M) fi .
+eq sort(nil) = nil .
+eq sort(X M) = insert(X, sort(M)).
+endfm
+
+view Toset from TRIV to TOSET is
+endv
+
+view IntAsToset from TOSET to INT is
+sort Elt to Int .
+endv
+
+fmod LIST-INT is
+protecting LIST{IntAsToset} .
+endfm
+
+----------------------------------------------------------------------------
+--------------------Lab 6 Ex 2 ---------------------------------------------
+
+
+fth TRIVconst is
+including TRIV .
+op @ : -> Elt .
+endfth
+
+
+fmod LIST2{T :: TRIVconst} is
+sort List{T} .
+subsort T$Elt < List{T} .
+op nil : -> List{T} .
+op __ : T$Elt List{T} -> List{T} [id: nil] .
+ops delete add : T$Elt List{T} -> List{T} .
+var X Y : T$Elt .
+var L : List{T} .
+eq delete(X, nil) = nil .
+eq delete(X, Y L) = if X == Y then @ delete(X,L) else Y delete(X,L) fi .
+eq add(X, nil) = nil .
+eq add(X, Y L) = if Y == @ then X add(X,L) else Y add(X,L) fi .
+endfm 
+
+
+view Trivconst from TRIV to TRIVconst is 
+endv
+
+
+view Sir from TRIVconst to STRING is
+sort Elt to String .
+op @ to term "[]" .
+endv
+
+fmod LIST2-STRING is
+protecting LIST2{Sir} .
+endfm
+
+
+--------------------------------------------------------------------
+-----------------Lab 3 Continuare ----------------------------------
+
+
+
+fmod TOT-LISTE is
+extending NAT .
+sort Lista .
+subsort Nat < Lista .
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+op lungime : Lista -> Nat .
+op _apartine_ : Nat Lista -> Bool .
+op sterge : Nat Lista -> Lista .
+op lung4k3 : Lista -> Bool .
+op 10to2 : Nat -> Lista .
+op 2to10 : Lista -> Nat .
+op multipli : Nat Nat -> Lista .
+op mult : Nat Nat -> Lista .
+op permutare : Lista -> Bool .
+op permut : Lista Nat -> Bool .
+op listpozmin : Lista -> Lista .
+op aux : Lista Nat Nat Lista -> Lista .
+vars X Y Z T P : Nat .
+vars L M : Lista .
+eq lungime(nil) = 0 .
+eq lungime(X L) = 1 + lungime(L) .
+eq X apartine nil = false .
+eq X apartine X L = true .
+ceq X apartine Y L = X apartine L if X =/= Y .
+eq sterge(X, nil) = nil .
+eq sterge(X, X L) = sterge(X, L) .
+ceq sterge(X, Y L) = Y sterge(X, L) if X =/= Y .
+eq lung4k3(nil) = false .
+eq lung4k3(X) = false .
+eq lung4k3(X Y) = false .
+eq lung4k3(X Y Z) = true .
+eq lung4k3(X Y Z T L) = lung4k3(L) .
+eq 10to2(0) = nil .
+eq 10to2(X) = 10to2(X quo 2) X rem 2 .
+eq 2to10(nil) = 0 .
+eq 2to10(X L) = X * 2 ^ lungime(L) + 2to10(L) .
+eq multipli(0,Y) = nil .
+eq multipli(s X , Y) = multipli(X , Y) (s X) * Y .
+ceq mult(X,Y) = nil if X < Y .
+eq mult(X,Y) =  multipli(X quo Y, Y) [owise] .
+eq listpozmin(nil) = nil .
+   eq listpozmin(X L) = aux(X L,1,X,nil) .
+
+   eq aux(nil,Z,T,P) = P .
+   eq aux(X L,Z,X,P) = aux(L,s Z,X,P Z) .
+   ceq aux(X L,Z,T,P) = aux(L,s Z,T,P) if X > T .
+   ceq aux(X L,Z,T,P) = aux(L,s Z,X,Z) if X < T .
+
+endfm
+
+
+
+---------------------------------------------------------
+
+fmod MULTIMI is
+protecting NAT .
+sort Multime .
+subsort Nat < Multime .
+
+op nil : -> Multime .
+op __ : Multime Multime -> Multime [assoc comm id: nil prec 20] .
+
+op _apartine_ : Nat Multime -> Bool  .
+op elimdup : Multime -> Multime .
+
+ops (_U_) (_V_) : Multime Multime -> Multime [assoc comm prec 30] .
+op _I_ : Multime Multime -> Multime [assoc comm prec 30] .
+op _\_ : Multime Multime -> Multime [prec 30] .
+ops (_D_) (_-_) : Multime Multime -> Multime [assoc comm prec 30] .
+vars X Y : Nat .
+vars M N : Multime .
+
+eq X apartine nil = false .
+eq X apartine X M = true .
+ceq X apartine Y M = X apartine M if Y =/= X .
+
+eq elimdup(nil) = nil .
+eq elimdup(X M) = if X apartine M then elimdup(M) else X elimdup(M) fi .
+
+eq nil U M = M .
+eq M U nil = M .
+eq M U N = elimdup(M N) .
+
+eq nil V M = M .
+eq X M V N = if X apartine N then M V N else X (M V N) fi . 
+
+eq nil I M = nil .
+eq X M I N = if X apartine N then X (M I N) else M I N fi .
+
+eq nil \ M = nil .
+eq X M \ N = if X apartine N then M \ N else X (M \ N) fi .
+
+eq M D N = (M \ N) U (N \ M) .
+eq M - N = (M \ N) V (N \ M) .
+
+
+endfm 
+
+
+-------------------------------------------------------------------------
+fmod PERMCIRC is
+***( generarea permutarilor circulare ale unei
+liste cu sau fara duplicate )
+
+***> Acest modul exemplifica lucrul cu liste de liste.
+***> De fapt nu avem nevoie aici de listele vide.
+
+   protecting NAT .
+
+   sorts Lista ListLista .
+   subsorts Nat < Lista < ListLista .
+***> Lista = sortul pentru liste de numere naturale
+***> ListLista = sortul pentru liste de liste de numere naturale
+
+   op nil : -> Lista .
+***( lista vida de numere naturale: elementul neutru la
+concatenarea de liste de numere naturale )
+   op __ : Lista Lista -> Lista [assoc id: nil prec 20] .
+***> concatenarea de liste de numere naturale
+   op null : -> ListLista .
+***( lista vida de liste de numere naturale: elementul neutru la
+concatenarea de liste de liste de numere naturale )
+   op _;_ : ListLista ListLista -> ListLista [assoc id: null prec 30] .
+***> concatenarea de liste de liste de numere naturale
+
+   op genperm : Lista -> ListLista .
+***> operatia care genereaza permutarile circulare
+   op permuta : Lista Lista -> ListLista .
+***> operatie auxiliara pentru scrierea lui genperm
+
+   var X : Nat .
+   vars L M : Lista .
+
+   eq genperm(nil) = nil . ***( lista de liste de numere
+naturale cu unicul element dat de lista vida de numere
+naturale (lista de numere naturale fara elemente) )
+
+   eq genperm(L X) = permuta(L X,X L) .
+
+   eq permuta(L,L) = L .
+   ceq permuta(L,M X) = M X ; permuta(L,X M) if L =/= M X .
+
+endfm
+
+
+
+
+fmod PERMUTARI is
+***> generarea tuturor permutarilor unei liste cu sau fara duplicate
+
+   protecting NAT .
+
+   sorts Lista ListLista .
+   subsorts Nat < Lista < ListLista .
+
+   op nil : -> Lista .
+   op __ : Lista Lista -> Lista [assoc id: nil prec 20] .
+
+   op null : -> ListLista .
+   op _;_ : ListLista ListLista -> ListLista [assoc id: null prec 30] .
+
+
+op adauga : Nat ListLista -> ListLista .
+op adfpoz : Nat Lista -> ListLista .
+
+
+vars  X Y : Nat .
+var P : ListLista .
+var L : Lista .
+
+eq adauga(X, null) = null .
+eq adauga(X, L ; P) = X L ; adauga(X, P) .
+
+eq adfpoz(X, nil) = null .
+eq adfpoz(X, Y L) = X adfpoz(X, L) .
+
+endfm
+
+-----------------------------------------------------------------------
+
+fmod BSORT is
+sort Lista .
+
+ops a b c : -> Lista .
+op __ : Lista Lista -> Lista [assoc].
+
+eq b a = a b .
+eq c b = b c .
+eq c a = a c . 
+
+endfm 
+
+
+fmod BUBBLESORT is
+protecting NAT .
+
+sort List .
+subsort Nat < List .
+
+op nil : -> List .
+op __ : List List -> List [assoc] .
+
+vars X Y : Nat .
+
+ceq X Y = Y X if Y < X . 
+
+endfm
+
+
+
+fmod LISTENAT is
+***> liste de numere naturale, cu lista vida si concatenarea
+***> modul pe care il vom importa in modulele urmatoare, pentru sortari
+
+   protecting NAT .
+
+   sort Lista .
+   subsort Nat < Lista .
+
+   op nil : -> Lista .
+   op __ : Lista Lista -> Lista [assoc id: nil] .
+
+endfm
+
+
+fmod INSSORT is
+***> sortare prin insertie directa 
+
+
+extending LISTENAT .
+
+op sortare : Lista -> Lista .
+op inserare : Nat Lista -> Lista . 
+
+vars X Y : Nat .
+var L : Lista .
+
+eq sortare(nil) = nil . 
+eq sortare(X L) = inserare(X, sortare(L)) .
+
+eq inserare(X, nil) = X .
+ceq inserare(X, Y L) = X Y L if X <= Y .
+ceq inserare(X, Y L) = Y inserare(X, L) if X > Y .
+
+endfm
+
+fmod MERGESORT is
+extending LISTENAT .
+
+op interclasare : Lista Lista -> Lista .
+op sortare : Lista -> Lista .
+
+
+vars X Y : Nat .
+vars L M : Lista .
+
+eq interclasare(L,nil) = L .
+eq interclasare(nil,M) = M .
+eq interclasare(X L, Y M) = if X <= Y then X interclasare(L, Y M) else Y interclasare(X L, M) fi .
+
+eq sortare(nil) = nil .
+eq sortare(X L Y M) = interclasare(sortare(X L),sortare(Y M)) .
+
+endfm  
+
+
+
+-----------------------------------------------------------
+fmod TEST1 is
+protecting NAT .
+sort Lista .
+subsort Nat < Lista .
+op nil : -> Lista .
+op __ : Lista Lista -> Lista [assoc id: nil] .
+
+op sumainterval : Lista -> Lista .
+op dubleazaimpar : Lista -> Lista .
+op div3 : Lista -> Lista .
+
+vars X Y : Nat .
+var L : Lista .
+
+eq sumainterval(nil) = 0 .
+eq sumainterval(X L) = if X >= 1 and X <= 3 then X + sumainterval(L) else sumainterval(L) fi .
+
+eq dubleazaimpar(nil) = nil .
+eq dubleazaimpar(X) = X X .
+eq dubleazaimpar(X Y L) = X X Y dubleazaimpar(L) .
+
+eq div3(nil) = nil .
+eq div3(X L) = if 3 divides X then X div3(L) else div3(L) fi .
+
+endfm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
