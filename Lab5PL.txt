@@ -1,0 +1,140 @@
+fmod PAIR{X :: TRIV,Y :: TRIV} is
+sort Pair{X,Y} .
+op _;_ : X$Elt Y$Elt -> Pair{X,Y} .
+op first : Pair{X,Y} -> X$Elt .
+op second : Pair{X,Y} -> Y$Elt .
+var U : X$Elt .
+var V : Y$Elt .
+eq first(U ; V) = U .
+eq second(U ; V) = V .
+endfm
+
+fmod PAIR-INT is
+protecting PAIR{Int,Int} .
+endfm
+
+fmod LIST{X :: TRIV} is 
+sort List{X} .
+subsort X$Elt < List{X} .
+op nil : -> List{X} .
+op __ : List{X} List{X} -> List{X} [assoc id: nil] .
+endfm
+
+view PairInt from TRIV to PAIR-INT is
+sort Elt to Pair{Int,Int} .
+endv
+
+fmod LIST-PAIR-INT is
+protecting LIST{PairInt} .
+protecting LIST{Int} .
+ops @first @second : List{PairInt} -> List{Int} .
+var A : Pair{Int,Int} .
+var L : List{PairInt} .
+eq @first(nil) = nil .
+eq @first(A L) = first(A) @first(L) .
+eq @second(nil) = nil .
+@second(A L) = second(A) @second(L) .
+endfm
+
+fmod PAIR-INT-STRING is
+protecting PAIR{Int,String} .
+endfm
+
+view PairIntString from TRIV to PAIR-INT-STRING is
+sort Elt to Pair{Int,String} .
+endv 
+
+fmod LIST-PAIR-INT-STRING is
+protecting LIST{PairIntString} .
+endfm
+
+fth TOSET is 
+including TRIV . 
+protecting BOOL .
+op _<=_ : Elt Elt -> Bool .
+vars A B C : Elt .
+eq A <= A = true [nonexec] .
+ceq A <= C = true if A <= B and B <= C [nonexec] .
+ceq A == B = true if A <= B and B <= A [nonexec] .
+ceq A <= B = true if not (B <= A ) [nonexec] .
+endfth
+
+
+fmod ORD-PAIR{X :: TOSET,Y :: TOSET} is
+sort Pair{X,Y} .
+op _;_ : X$Elt Y$Elt -> Pair{X,Y} .
+op first : Pair{X,Y} -> X$Elt .
+op second : Pair{X,Y} -> Y$Elt .
+op _lex_ : Pair{X,Y} Pair{X,Y} -> Bool .
+var U : X$Elt .
+var V : Y$Elt .
+vars A B : Pair{X,Y} .
+eq first(U ; V) = U .
+eq second(U ; V) = V .
+eq A lex B = (first(A) == first(B) and second(A) <= second(B)) or (first(A) <= first(B) and first(A) =/= first(B)) .
+endfm
+
+view IntAsToset from TOSET to INT is
+sort Elt to Int .
+endv
+
+fmod ORD-PAIR-INT is
+protecting ORD-PAIR{IntAsToset,IntAsToset} .
+endfm
+
+view Toset from TRIV to TOSET is endv
+
+fmod SET{X :: TRIV} is 
+sort Set{X} .
+subsort X$Elt < Set{X} .
+op nil : -> Set{X} .
+op __ : Set{X] Set{X} -> Set{X} [assoc comm id: nil] .
+endfm
+
+fmod SET-MAX{T :: TOSET} is 
+protecting SET{Toset}{T} .
+op maxim : Set{Toset}{T} -> T$Elt .
+op maxelt : T$Elt T$Elt -> T$Elt .
+vars A B : T$Elt .
+var M : Set{Toset}{T} .
+eq maxelt(A,B) = if A <= B then B else A fi .
+eq maxim(A) = A .
+eq maxim(A B M) = maxelt(A, maxim(B M)) .
+endfm 
+
+view IntAsToset from TOSET to INT 
+is sort Elt to Int .
+endv
+view StringAsToset from TOSET to S
+
+fmod SET-INT-MAX is 
+protecting SET_MAX{IntAsToset} .
+endfm
+
+
+fmod SET{X :: TRIV} is 
+	sort Set {X}.
+subsort X$Elt < Set{X} .
+	op nil : -> Set{X} .
+op __ : Set{X} Set{X} -> Set{X} [assoc comm id: nil ] .
+endfm
+ fmod SET-MAX{T :: TOSET } is 
+	protecting SET {Toset}{T} .
+op maxim : Set {Toset}{T} -> T$Elt .
+op maxelt : T$Elt T$Elt -> T$Elt .
+vars A B : T$Elt .
+var M : Set{Toset}{T} .
+eq maxelt(A,B) = if A <= B then B else A fi .
+eq maxim(A) = A .
+eq maxim(A B M) = maxelt(A, maxim(B M)) .
+endfm
+ view IntAsToSet from TOSET to INT is	
+	sort Elt to Int .
+endv
+fmod SET-INT-MAX is
+protecting SET-MAX{IntAsToset} .
+endfm
+
+fmod SET-STRING-MAX is 
+protecting SET-MAX{StringAsToset}
+endfm

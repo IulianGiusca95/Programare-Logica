@@ -1,0 +1,43 @@
+fmod EXTREE is
+protecting TREE .
+ops ex1 ex2 : -> Tree .
+eq ex1 = (empty 2 empty) 1 (empty 3 (empty 4 empty)) .
+eq ex2 = ((empty 4 empty) 2 ((empty 6 empty) 5 empty)) 1 (empty 3 (empty 8 empty) 7 ((empty 10 empty) 9 empty))) .
+endfm
+
+fmod OPTREE is
+protecting EXTREE .
+protecting LIST-INT3 .
+op search : Int Tree -> Bool .
+op depth : Tree -> Nat .
+ops RSD SRD SDR : Tree -> List .
+vars X Y : Int .
+vars A B : Tree .
+eq search(X,empty) = false .
+eq search(X,A X B) = true .
+ceq search(X,A Y B) = search(X,A) or search(X,B) is X=/=Y .
+eq depth(empty) = 0 .
+eq depth(A X B) = s max(depth(A),depth(B)) .
+eq RSD(empty) = nil .
+eq RSD(A X B) = X RSD(A) RSD(B) .
+eq SRD(empty) = nil .
+eq SRD(A X B) = SRD(A) X SRD(B) .
+eq SDR(empty) = nil .
+eq SDR(A X B) = SDR(A) SDR(B) X .
+endfm 
+
+fmod BTSORT is 
+protecting OPTREE .
+op btsort : List -> List .
+op bt-insert : List Tree -> Tree .
+op bt-ins : Int Tree -> Tree .
+vars X Y : Int .
+vars L : List .
+vars A B : Tree .
+eq bt-ins(X,empty) = empty X empty .
+eq bt-ins(X,A Y B) = if X <= Y then bt-ins(X,A) Y B else A Y bt-ins(X,B) fi .
+eq bt-insert(nil,A) = A .
+eq bt-insert(X L,A) = bt-ins(X,bt-insert(L,A)) .
+eq btsort(L) = SRD(bt-insert(L,empty)) .
+endfm
+

@@ -1,0 +1,61 @@
+fmod LISTEINTORD is
+
+   including LISTE{Int} .
+
+   vars X Y : Int .
+
+   ceq X Y = Y X if X > Y .
+	
+endfm
+
+eq h(X + Y) = h(X) + h(Y) [strat (0 1)] .
+1-argumentul lui h
+red h( 1 + 1 + 1 + 1 + 1) . => h(1) +  ... + h(1)
++ din arg lui h= adunarea nr nat 
+P$NSort=sort preluat din parametru 
+
+fmod EXERC{P :: RING} is 
+op test : P$Ring -> P$Ring .
+var X : P$Ring .
+eq test(X) = (- X) * (X + X) .
+endfm 
+
+fmod TESTARE is 
+protecting EXERC{RingToRat} .
+endfm
+
+fmod LIST-INT is
+protecting LIST{Int} .
+ops dupl (#_) : List{Int} -> List{Int} .
+var L : List{Int} .
+var X : Int .
+eq # nil = nil .
+eq # (X L) = (- X) (# L) .
+eq dupl(nil) = nil .
+eq dupl(X L) = X X dupl(L) .
+endfm
+ 
+view MyView from TRIV# to NAT is
+sort Elt to Nat .
+op # X : Elt to term (X : Nat rem 10) .
+endv
+
+fmod MYVISION is
+protecting LIST#{MyView} .
+endfm 
+
+fmod ULTCF is
+protecting NAT .
+op ultcf_ : Nat -> Nat .
+var X : Nat .
+eq ultcf(X) = X rem 10 .
+endfm
+
+view MyV from TRIV# to ULTCF is 
+sort Elt to Nat .
+op #_ to ultcf_ .
+endv
+
+fmod MYVMOD is 
+protecting LIST#{MyV} .
+endfm

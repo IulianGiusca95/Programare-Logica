@@ -1,0 +1,158 @@
+
+
+op _+_ i : Float  Float -> Complex .
+LAB 6 
+
+fmod SET{X :: TRIV} is
+sort Set{X} .
+subsort X$Elt < Set{X} .
+op nil : -> Set{X} .
+op __ : Set{X} Set{X} -> Set{X} [assoc comm id: nil] .
+op _in_ : X$Elt Set{X} -> Bool .
+ops (_U_) (_I_) (_\_) (_D_) : Set{X} Set{X} -> Set{X} .
+vars A B : X$Elt .
+vars L M : Set{X} .
+
+eq A A M = A M .
+eq A in nil = false .
+eq A in (A L) = true .
+ceq A in (B L) = A in L if A =/= B .
+eq L U M = L M .
+eq L I nil = nil .
+eq L I (A M) = if A in L then A (L I M) else L I M fi .
+eq nil \ M = nil .
+eq (A L) \ M = if A in M then L \ M else A(L \ M) fi .
+eq L D M = (L \ M) U (M \ L) .
+endfm
+
+
+fmod SET-NAT is 
+protecting SET{Nat} .
+endfm
+
+
+EX1-Lab 6 Diaconescu
+
+fth TOSET is
+including TRIV .
+protecting BOOL .
+op _<=_ : Elt Elt -> Bool .
+endfth
+
+view IntAsToset from TOSET to INT is
+sort Elt to Int . 
+endv 
+
+fmod LIST{T :: TOSET} is
+protecting NAT .
+sort List{T} .
+subsort T$Elt < List{T} .
+op nil : -> List{T} .
+op __ : T$Elt List{T} -> List{T} [id: nil] .
+op length : List{T} -> Nat .
+ops (_<<<_) compar : List{T} List{T} -> Bool .
+op insert : T$Elt List{T} -> List{T} .
+op sort : List{T} -> List{T} .
+vars A B : T$Elt .
+vars L M : List{T} .
+eq length(nil) = 0 .
+eq length(A L) = s length(L) .
+ceq L <<< M = true if length(L) < length(M) .
+ceq L <<< M = false if length(L) > length(M) .
+eq L <<< M = compar(L,M) [owise] .
+eq compar(nil,nil) = true .
+eq compar(A L,B M) = A <= B and compar(L,M) .
+eq sort(nil) = nil .
+eq sort(A L) = insert(A,sort(L)) .
+eq insert(A,nil) = A .
+eq insert(A,B L) = if A <= B then A B L else B insert(A,L) fi .
+endfm
+
+fmod LIST-INT is
+protecting LIST{IntAsToset} .
+endfm
+
+
+
+
+fmod LIST-INT is
+protecting LIST{IntAsToset} . 
+endfm  
+	
+ex2 Diaconescu
+
+fth TRIVconst is 
+including TRIV .
+op @ : -> Elt .
+endfth
+
+fmod LISTCT{X :: TRIVconst} is 
+sort List{X} .
+subsort X$Elt < List{X} .
+op nil : -> List{X} .
+op __ : List{X} List{X} -> List{X} [assoc id: nil] .
+ops delete add : X$Elt List{X} -> List{X} .
+vars A B : X$Elt .
+var L : List{X} . 
+eq delete(A,nil) = nil .
+eq delete(A, A L) = @delete(A,L) .
+ceq delete(A,B L) = B delete(A,L) if A =\= B .
+eq add(A,nil) = nil .
+eq add(A,nil) = nil .
+eq add(A,@,L) = A add(A,L) .
+ceq add(A,B,L) = B add(A,L) if B =\= @ .
+
+view StringCt from TRIVconst to STRING is 
+sort Elt to String .
+op @ to term "[]" .
+endv
+
+fmod LISTSTRINGCT is
+ptotecting LISTCT{StringCt}
+endfm
+
+
+ex: sa faca lista de subliste ordonate crescator pt lista de intregi 
+
+red slord(-2 0 0 1 0 -1 5 0 1 3).
+
+
+(se incarca inainte si: 
+
+fth TOSET is
+including TRIV .
+protecting BOOL .
+op _<=_ : Elt Elt -> Bool .
+endfth
+
+view IntAsToset from TOSET to INT is
+sort Elt to Int . 
+endv )
+
+
+
+fmod LISTLIST{T :: TOSET} is 
+sorts List{T} ListList{T} .
+subsorts T$Elt < List{T} < ListList{T} .
+op nil : -> List{T} .
+op __ : List{T} List{T} -> List{T} [assoc id: nil prec 20] . 
+op null : -> ListList{T} .
+op _;_ : ListList{T} ListList{T} -> ListList{T} [assoc id: null prec 30] .
+op slord : List{T} -> ListList{T} .
+op aux : List{T} List{T} -> ListList{T} .
+vars A B : T$Elt .
+vars S L : List{T} .
+eq slord(L) = aux(L,nil) .
+eq aux(nil,S) = S .
+eq aux(A L,nil) = aux(L,A) .
+eq aux(A L, S B) = if B <= A then aux(L,S B A) else S B ; aux(L,A) fi .
+endfm 
+
+fmod  LISTLISTINT is
+protecting LISTLIST{IntAsToset} .  
+endfm
+
+
+
+
+ 	
